@@ -78,6 +78,7 @@ export default function AdminPage() {
   const [showForm, setShowForm] = useState(false);
 
   // Devotional state
+  const [isSavingDevotional, setIsSavingDevotional] = useState(false);
   const [devotionals, setDevotionals] = useState<Devotional[]>([]);
   const [devotionalForm, setDevotionalForm] = useState<Devotional>({
     title: "",
@@ -176,6 +177,7 @@ export default function AdminPage() {
   };
 
   const handleSaveDevotional = async () => {
+    setIsSavingDevotional(true);
     const token = await getToken();
     if (!token) return;
 
@@ -184,9 +186,19 @@ export default function AdminPage() {
       toast.success("Devotional saved");
       fetchDevotionals();
       setShowForm(false);
+      setDevotionalForm({
+        title: "",
+        date: format(new Date(), "yyyy-MM-dd"),
+        memoryVerse: { verse: "", text: "" },
+        bibleText: { verse: "", text: "" },
+        message: "",
+        conclusion: "",
+      });
     } else {
       toast.error("Failed to save devotional");
     }
+
+    setIsSavingDevotional(false);
   };
 
   if (!user) {
@@ -314,7 +326,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
                     <div className="space-y-4">
                       <h4 className="font-bold text-sm text-purple-700">
                         MEMORY VERSE
@@ -385,7 +397,7 @@ export default function AdminPage() {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="space-y-2 pt-4 border-t">
                     <Label>Message Body</Label>
@@ -414,8 +426,12 @@ export default function AdminPage() {
                     />
                   </div>
 
-                  <Button className="w-full" onClick={handleSaveDevotional}>
-                    Save Devotional
+                  <Button
+                    className="w-full"
+                    disabled={isSavingDevotional}
+                    onClick={handleSaveDevotional}
+                  >
+                    {isSavingDevotional ? "Saving..." : "Save Devotional"}
                   </Button>
                 </div>
               )}

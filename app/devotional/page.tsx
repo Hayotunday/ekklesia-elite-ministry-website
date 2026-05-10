@@ -100,7 +100,7 @@ export default function DevotionalPage() {
               </section>
 
               {/* Memory Verse */}
-              <section className="text-center max-w-2xl mx-auto py-4 border-y border-slate-100">
+              {/* <section className="text-center max-w-2xl mx-auto py-4 border-y border-slate-100">
                 <div className="flex justify-center text-purple-500 mb-2">
                   <Quote size={24} />
                 </div>
@@ -113,7 +113,7 @@ export default function DevotionalPage() {
                 <p className="text-purple-600 font-bold">
                   — {devotional.memoryVerse.verse}
                 </p>
-              </section>
+              </section> */}
 
               {/* Message */}
               <section>
