@@ -17,6 +17,7 @@ export function Header() {
     { href: "/devotional", label: "Devotional" },
     { href: "/gallery", label: "Gallery" },
     { href: "/contact", label: "Contact" },
+    { href: "/donate", label: "Donate" },
   ];
 
   return (

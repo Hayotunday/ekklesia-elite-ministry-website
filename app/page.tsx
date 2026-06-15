@@ -434,6 +434,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Donation Call-to-Action */}
+      <section className="bg-gray-50 py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100 flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
+            <div className="flex flex-col lg:flex-row items-center gap-6">
+              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 shrink-0">
+                <Heart size={32} />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  Partner with Our Mission
+                </h2>
+                <p className="text-gray-600 max-w-xl text-lg">
+                  Your generosity helps us nurture the next generation for
+                  Christ and repair the breach in society. Every contribution
+                  makes a difference.
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0 w-full lg:w-auto">
+              <Link href="/donate" className="block">
+                <Button className="w-full lg:w-auto bg-purple-600 hover:bg-purple-700 text-white px-10 py-6 h-auto text-lg font-bold rounded-2xl shadow-lg shadow-purple-200 transition-all hover:-translate-y-1">
+                  Donate Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-purple-600 text-white py-16 md:py-24 rounded-3xl mx-6 my-16 md:mx-12">
         <div className="max-w-4xl mx-auto px-6 text-center">
