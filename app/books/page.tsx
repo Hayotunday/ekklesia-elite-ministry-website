@@ -2,6 +2,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { BookOpen, Download, FileText } from "lucide-react";
 import Link from "next/link";
+import { requireDbAdmin } from "@/lib/firebase-admin";
 
 interface Book {
   id: string;
@@ -12,17 +13,15 @@ interface Book {
 
 async function fetchBooks(): Promise<Book[]> {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000");
-    const res = await fetch(`${baseUrl}/api/books`, {
-      next: { revalidate: 60 },
-    });
-    if (res.ok) return res.json();
-    return [];
-  } catch {
+    const db = requireDbAdmin();
+    const snapshot = await db
+      .collection("books")
+      .orderBy("uploadedAt", "desc")
+      .get();
+
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Book);
+  } catch (error) {
+    console.error("Failed to load books for prerendering:", error);
     return [];
   }
 }
@@ -91,7 +90,7 @@ export default async function BooksPage() {
                     className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden group"
                   >
                     {/* PDF Preview Area */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 flex items-center justify-center">
+                    <div className="bg-linear-to-br from-purple-50 to-purple-100 p-8 flex items-center justify-center">
                       <div className="relative">
                         <div className="w-20 h-24 bg-white rounded-lg shadow-md flex flex-col items-center justify-center border border-purple-200 group-hover:scale-105 transition-transform duration-300">
                           <FileText className="w-8 h-8 text-purple-600 mb-1" />
