@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Edit,
   Trash,
@@ -12,6 +12,9 @@ import {
   Settings,
   LayoutDashboard,
   Plus,
+  FileText,
+  Download,
+  X,
 } from "lucide-react";
 import { auth } from "@/lib/firebase-client";
 import {
@@ -50,6 +53,13 @@ import {
   deleteDevotional,
   getRecentDevotionals,
 } from "@/lib/devotional";
+import {
+  type Book,
+  getBooks,
+  addBook,
+  updateBook,
+  deleteBook,
+} from "@/lib/books";
 import { formatPhoneNumber } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -62,6 +72,7 @@ export default function AdminPage() {
   const [page, setPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
   const [loadingGallery, setLoadingGallery] = useState(false);
+  const [totalGalleryItems, setTotalGalleryItems] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
     email: "",
@@ -89,11 +100,22 @@ export default function AdminPage() {
     conclusion: "",
   });
 
+  // Books state
+  const [books, setBooks] = useState<Book[]>([]);
+  const [showBookForm, setShowBookForm] = useState(false);
+  const [isUploadingBook, setIsUploadingBook] = useState(false);
+  const [bookName, setBookName] = useState("");
+  const [bookFile, setBookFile] = useState<File | null>(null);
+  const [editingBookId, setEditingBookId] = useState<string | null>(null);
+  const [editingBookName, setEditingBookName] = useState("");
+  const bookFileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
     fetchContact();
     fetchGallery(0);
     fetchDevotionals();
+    fetchBooks();
     return unsub;
   }, []);
 
@@ -146,11 +168,28 @@ export default function AdminPage() {
     const items = await getGalleryItems(p, pageSize);
     if (p === 0) {
       setGallery(items);
+      setTotalGalleryItems(items.length); // Track total items in first page
+      setIsLastPage(false); // Reset when loading from page 0
     } else {
-      setGallery((prev) => [...prev, ...items]);
+      // Only append if we haven't already displayed these items
+      // Calculate how many items we should have after this fetch
+      const expectedTotal = (p + 1) * pageSize;
+      const currentTotal = gallery.length + items.length;
+
+      // Only append if we're getting new items (not duplicates)
+      if (currentTotal <= expectedTotal && items.length > 0) {
+        setGallery((prev) => {
+          // Remove duplicates by checking item IDs
+          const existingIds = new Set(prev.map((item) => item.id));
+          const newItems = items.filter((item) => !existingIds.has(item.id));
+          return [...prev, ...newItems];
+        });
+        setTotalGalleryItems(currentTotal);
+      }
     }
     setLoadingGallery(false);
     setPage(p);
+    // Set isLastPage if we got fewer items than expected (indicating we've reached the end)
     if (items.length < pageSize) setIsLastPage(true);
   };
 
@@ -174,6 +213,92 @@ export default function AdminPage() {
   const fetchDevotionals = async () => {
     const items = await getRecentDevotionals(20);
     setDevotionals(items);
+  };
+
+  // ---------- Books handlers ----------
+  const fetchBooks = async () => {
+    const items = await getBooks();
+    setBooks(items);
+  };
+
+  const handleAddBook = async () => {
+    if (!bookName.trim() || !bookFile) {
+      toast.error("Please provide a book name and select a PDF file.");
+      return;
+    }
+    setIsUploadingBook(true);
+    const token = await getToken();
+    if (!token) {
+      toast.error("Not authenticated");
+      setIsUploadingBook(false);
+      return;
+    }
+
+    // Upload the PDF to Cloudinary via the existing upload route
+    const formData = new FormData();
+    formData.append("file", bookFile);
+    formData.append("resource_type", "raw"); // raw for PDFs
+
+    let fileUrl = "";
+    let publicId = "";
+    try {
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!uploadRes.ok) throw new Error("Upload failed");
+      const uploadData = await uploadRes.json();
+      fileUrl = uploadData.secure_url || uploadData.url;
+      publicId = uploadData.publicId || uploadData.public_id;
+    } catch {
+      toast.error("Failed to upload PDF. Please try again.");
+      setIsUploadingBook(false);
+      return;
+    }
+
+    const result = await addBook(
+      { name: bookName.trim(), fileUrl, publicId },
+      token,
+    );
+    if (result.success) {
+      toast.success("Book added successfully!");
+      setShowBookForm(false);
+      setBookName("");
+      setBookFile(null);
+      if (bookFileInputRef.current) bookFileInputRef.current.value = "";
+      fetchBooks();
+    } else {
+      toast.error(result.error || "Failed to add book");
+    }
+    setIsUploadingBook(false);
+  };
+
+  const handleRenameBook = async (id: string) => {
+    if (!editingBookName.trim()) return;
+    const token = await getToken();
+    if (!token) return;
+    const result = await updateBook(id, editingBookName.trim(), token);
+    if (result.success) {
+      toast.success("Book renamed");
+      setEditingBookId(null);
+      setEditingBookName("");
+      fetchBooks();
+    } else {
+      toast.error(result.error || "Failed to rename book");
+    }
+  };
+
+  const handleDeleteBook = async (id?: string, publicId?: string) => {
+    if (!id) return;
+    const token = await getToken();
+    if (!token) return;
+    const result = await deleteBook(id, publicId, token);
+    if (result.success) {
+      toast.success("Book deleted");
+      fetchBooks();
+    } else {
+      toast.error(result.error || "Failed to delete book");
+    }
   };
 
   const handleSaveDevotional = async () => {
@@ -269,6 +394,9 @@ export default function AdminPage() {
           </TabsTrigger>
           <TabsTrigger value="gallery" className="flex items-center gap-2">
             <ImageIcon className="w-4 h-4" /> Gallery
+          </TabsTrigger>
+          <TabsTrigger value="books" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" /> Books
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="w-4 h-4" /> Site Settings
@@ -571,14 +699,197 @@ export default function AdminPage() {
                   </Card>
                 ))}
               </div>
-              {!isLastPage && (
+              {!isLastPage && gallery.length > 0 && (
                 <div className="mt-6 flex justify-center">
                   <Button
                     onClick={() => fetchGallery(page + 1)}
-                    disabled={loadingGallery}
+                    disabled={loadingGallery || isLastPage}
                   >
                     {loadingGallery ? "Loading..." : "Load more"}
                   </Button>
+                </div>
+              )}
+              {isLastPage && gallery.length > 0 && (
+                <div className="mt-6 flex justify-center">
+                  <p className="text-gray-500 text-sm">All items loaded</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ===== BOOKS TAB ===== */}
+        <TabsContent value="books" className="space-y-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" /> Books &amp; Resources
+                </CardTitle>
+                <CardDescription>
+                  Upload and manage downloadable PDF books.
+                </CardDescription>
+              </div>
+              <Button
+                size="sm"
+                variant={showBookForm ? "destructive" : "default"}
+                onClick={() => {
+                  setShowBookForm(!showBookForm);
+                  setBookName("");
+                  setBookFile(null);
+                }}
+              >
+                {showBookForm ? (
+                  <>
+                    <X className="w-4 h-4 mr-1" /> Cancel
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4 mr-1" /> Add Book
+                  </>
+                )}
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Add Book Form */}
+              {showBookForm && (
+                <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 space-y-4">
+                  <h4 className="font-semibold text-sm text-purple-700 uppercase tracking-wide">
+                    New Book
+                  </h4>
+                  <div className="space-y-2">
+                    <Label htmlFor="book-name">Book Name</Label>
+                    <Input
+                      id="book-name"
+                      value={bookName}
+                      onChange={(e) => setBookName(e.target.value)}
+                      placeholder="e.g. Foundations of Faith"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="book-file">PDF File</Label>
+                    <input
+                      id="book-file"
+                      ref={bookFileInputRef}
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => setBookFile(e.target.files?.[0] ?? null)}
+                      className="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
+                    />
+                    {bookFile && (
+                      <p className="text-xs text-muted-foreground">
+                        Selected: {bookFile.name} (
+                        {(bookFile.size / 1024 / 1024).toFixed(2)} MB)
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    className="w-full"
+                    disabled={isUploadingBook}
+                    onClick={handleAddBook}
+                  >
+                    {isUploadingBook ? "Uploading..." : "Upload & Save Book"}
+                  </Button>
+                </div>
+              )}
+
+              {/* Books List */}
+              {books.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                  <p>No books yet. Add your first one above.</p>
+                </div>
+              ) : (
+                <div className="border rounded-md overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-50 border-b">
+                      <tr>
+                        <th className="px-4 py-3 text-left">Book Name</th>
+                        <th className="px-4 py-3 text-left">File</th>
+                        <th className="px-4 py-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {books.map((book) => (
+                        <tr key={book.id} className="hover:bg-slate-50">
+                          <td className="px-4 py-3">
+                            {editingBookId === book.id ? (
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  value={editingBookName}
+                                  onChange={(e) =>
+                                    setEditingBookName(e.target.value)
+                                  }
+                                  className="h-8 text-sm"
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter")
+                                      handleRenameBook(book.id!);
+                                    if (e.key === "Escape") {
+                                      setEditingBookId(null);
+                                      setEditingBookName("");
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleRenameBook(book.id!)}
+                                >
+                                  Save
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => {
+                                    setEditingBookId(null);
+                                    setEditingBookName("");
+                                  }}
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <span className="font-medium">{book.name}</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <a
+                              href={book.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-800 text-xs font-medium"
+                            >
+                              <Download className="w-3 h-3" /> View PDF
+                            </a>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Rename"
+                              onClick={() => {
+                                setEditingBookId(book.id!);
+                                setEditingBookName(book.name);
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-red-500"
+                              title="Delete"
+                              onClick={() =>
+                                handleDeleteBook(book.id, book.publicId)
+                              }
+                            >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </CardContent>

@@ -322,7 +322,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-lg">
             <Image
               loading="eager"
-              src="/imgs/ekklesia-elite-team.jpeg"
+              src="/imgs/ekklesia-elite-training.jpeg"
               alt="Ekklesia Elite Team"
               width={1200}
               height={700}

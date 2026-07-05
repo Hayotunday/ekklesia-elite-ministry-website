@@ -16,13 +16,18 @@ export default function Gallery() {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(6);
+  const [totalItems, setTotalItems] = useState<GalleryItem[]>([]);
+  const [hasLoadedAll, setHasLoadedAll] = useState(false);
   const itemsPerPage = 10;
 
   const fetchGallery = async () => {
+    if (hasLoadedAll) return; // Don't refetch if all items are already loaded
     setIsLoading(true);
     // Fetch all items from the database to handle filtering and display limits locally
     const items = await getGalleryItems(0, 1000);
     setGalleryItems(items);
+    setTotalItems(items);
+    setHasLoadedAll(true); // Mark that we've fetched all available items
     setIsLoading(false);
   };
 
@@ -77,7 +82,10 @@ export default function Gallery() {
     return filteredItems.slice(0, visibleCount);
   }, [filteredItems, visibleCount]);
 
-  const isLastPage = visibleCount >= filteredItems.length;
+  // Check if we've displayed all available items (accounting for filters)
+  const isLastPage = useMemo(() => {
+    return visibleCount >= filteredItems.length || filteredItems.length === 0;
+  }, [visibleCount, filteredItems]);
 
   return (
     <div className="min-h-screen flex flex-col">
