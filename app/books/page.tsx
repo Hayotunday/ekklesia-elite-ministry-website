@@ -26,6 +26,17 @@ async function fetchBooks(): Promise<Book[]> {
   }
 }
 
+// Helper functio to force download flag into cludinary URL
+const getDownloadableUrl = (url: string) => {
+  if (!url) return "";
+  if (url.includes("/upload/")) {
+    if (url.includes("fl_attachment")) return url; // already has the flag
+
+    return url.replace("/upload/", "/upload/f_pdf,fl_attachment/");
+  }
+  return url;
+};
+
 export const metadata = {
   title: "Books | Ekklesia Elite – Repairer of the Breach",
   description:
@@ -117,17 +128,17 @@ export default async function BooksPage() {
                       </p>
 
                       <div className="mt-auto">
-                        <Link
+                        <a
                           href={book.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          download
+                          download={`${book.name}.pdf`}
                           className="flex items-center justify-center gap-2 w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition-colors duration-200"
                           aria-label={`Download ${book.name}`}
                         >
                           <Download className="w-4 h-4" />
                           Download
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>

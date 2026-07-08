@@ -20,10 +20,29 @@ export async function POST(request: Request) {
   try {
     // convert file to buffer for upload
     const buffer = Buffer.from(await file.arrayBuffer());
-    const resourceType = file.type === "application/pdf" ? "raw" : "image";
+    const isPdf = file.type === "application/pdf";
+    // set target folder dynamically based on file type
+    const targetFolder = isPdf ? "documents" : "gallery";
+    // set resource type dynamically based on file type
+    const resourceType = isPdf ? "raw" : "image";
+    // configure upload options dynamically based on file type
+    const uploadOptions: any = {
+      folder: targetFolder,
+      resource_type: resourceType,
+    };
+
+    // if it's pdf, construct a unique public_id with the.pdf extension preserved
+    if (isPdf) {
+      const cleanFileName = file.name
+        .replace(/\.[^\.]+$/, "") // remove original extension safely
+        .replace(/[^a-zA-Z0-9]/g, "_"); //replace special characters with underscores
+
+      uploadOptions.public_id = `${cleanFileName}_${Date.now()}.pdf`; // append timestamp for uniqueness
+    }
+
     const uploadPromise: Promise<any> = new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: resourceType === "raw" ? "documents" : "gallery", resource_type: resourceType },
+        uploadOptions,
         (error: any, result: any) => {
           if (error) reject(error);
           else resolve(result);
@@ -52,7 +71,9 @@ export async function DELETE(request: Request) {
     if (!publicId) {
       return NextResponse.json({ error: "publicId required" }, { status: 400 });
     }
-    await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("delete cloudinary error", err);
