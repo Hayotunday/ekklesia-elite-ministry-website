@@ -40,7 +40,7 @@ const getDownloadableUrl = (url: string) => {
 export const metadata = {
   title: "Books | Ekklesia Elite – Repairer of the Breach",
   description:
-    "Download free Christian books and resources from Ekklesia Elite Network and Evangelical Ministry.",
+    "Download free Christian books and resources from Ekklesia Elite Christian Ministry.",
 };
 
 export default async function BooksPage() {

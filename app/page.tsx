@@ -42,11 +42,11 @@ export default function Home() {
               <p className="text-purple-600 text-sm font-semibold uppercase tracking-wide mb-4">
                 A Better Tomorrow Starts Today
               </p>
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-                Ekklesia Elite Network and Evangelical Ministry:
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 capitalize">
+                Ekklesia Elite Christian Ministry:
               </h1>
-              <h1 className="text-2xl md:text-3xl font-bold text-purple-600 mb-6">
-                Repairer of the Breach
+              <h1 className="text-2xl md:text-3xl font-bold text-purple-600 mb-6 capitalize">
+                transforming lifes, raising destinies
               </h1>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
                 Nurturing the next Generation for Christ. Empowering children
