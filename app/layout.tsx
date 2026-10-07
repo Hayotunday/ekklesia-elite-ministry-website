@@ -45,6 +45,8 @@ export const metadata: Metadata = {
     "spiritual growth",
     "community outreach in ikorodu",
     "Mojisola Olawale",
+    "evangelical ministry",
+    "evangelical ministry in Lagos",
     "JFFX+2QC, Lagos Rd, Ikorodu, 104101, Lagos, Nigeria",
   ],
 };
