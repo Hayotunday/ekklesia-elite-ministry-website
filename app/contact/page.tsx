@@ -24,12 +24,14 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 
+const DEFAULT_CONTACT: ContactInfo = {
+  email: "info@ekklesiaeliteministry.org",
+  phone: "08027815383",
+  address: "JFFX+2QC, Lagos Rd, Ikorodu, 104101, Lagos, Nigeria",
+};
+
 export default function Contact() {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    email: "",
-    phone: "",
-    address: "",
-  });
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(DEFAULT_CONTACT);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -44,7 +46,12 @@ export default function Contact() {
   useEffect(() => {
     getContactInfo().then((info) => {
       if (info.email || info.phone || info.address) {
-        setContactInfo(info);
+        setContactInfo((prev) => ({
+          ...prev,
+          ...(info.email ? { email: info.email } : {}),
+          ...(info.phone ? { phone: info.phone } : {}),
+          ...(info.address ? { address: info.address } : {}),
+        }));
       }
     });
   }, []);
@@ -119,8 +126,7 @@ export default function Contact() {
             Get in Touch with Us
           </h1>
           <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-            Whether you have a question about our programs or need support, we
-            are here to help.
+            Connect with Ekklesia Elite Evangelical Ministry in Ikorodu, Lagos. Whether you have a question about our youth programs, need counseling, or wish to partner with us, we are here to help.
           </p>
         </div>
       </section>
@@ -270,11 +276,18 @@ export default function Contact() {
                     <MapPin className="text-purple-600 shrink-0" size={24} />
                     <div>
                       <p className="text-sm text-gray-600 uppercase font-semibold">
-                        Visit us
+                        Visit us in Ikorodu
                       </p>
-                      <p className="text-gray-900 font-semibold">
+                      <Link
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          contactInfo.address || "JFFX+2QC, Lagos Rd, Ikorodu, Lagos, Nigeria"
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-900 font-semibold hover:text-purple-600 transition-colors block text-sm"
+                      >
                         {contactInfo.address}
-                      </p>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

@@ -7,17 +7,24 @@ import { toast } from "sonner";
 import { getContactInfo, type ContactInfo } from "@/lib/contact";
 import Image from "next/image";
 
+const DEFAULT_CONTACT: ContactInfo = {
+  email: "info@ekklesiaeliteministry.org",
+  phone: "08027815383",
+  address: "JFFX+2QC, Lagos Rd, Ikorodu, 104101, Lagos, Nigeria",
+};
+
 export function Footer() {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    email: "",
-    phone: "",
-    address: "",
-  });
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(DEFAULT_CONTACT);
 
   useEffect(() => {
     getContactInfo().then((info) => {
       if (info.email || info.phone || info.address) {
-        setContactInfo(info);
+        setContactInfo((prev) => ({
+          ...prev,
+          ...(info.email ? { email: info.email } : {}),
+          ...(info.phone ? { phone: info.phone } : {}),
+          ...(info.address ? { address: info.address } : {}),
+        }));
       }
     });
   }, []);
@@ -149,9 +156,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8">
-          <p className="text-gray-400 text-sm text-center">
-            © 2026 Repairer of the Breach. All rights reserved.
+        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400 space-y-1">
+          <p>
+            © {new Date().getFullYear()} Ekklesia Elite Evangelical Ministry — Repairer of the Breach. All rights reserved.
+          </p>
+          <p className="text-xs text-gray-500">
+            Faith-based Christian community, teens & youth ministry in Ikorodu, Lagos, Nigeria.
           </p>
         </div>
       </div>

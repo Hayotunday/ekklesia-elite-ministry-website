@@ -42,15 +42,14 @@ export default function Home() {
               <p className="text-purple-600 text-sm font-semibold uppercase tracking-wide mb-4">
                 A Better Tomorrow Starts Today
               </p>
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900">
-                Ekklesia Elite Network and Evangelical Ministry:
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 tracking-tight">
+                Ekklesia Elite Evangelical Ministry
               </h1>
-              <h1 className="text-2xl md:text-3xl font-bold text-purple-600 mb-6">
+              <p className="text-2xl md:text-3xl font-bold text-purple-600 mt-2 mb-6">
                 Repairer of the Breach
-              </h1>
+              </p>
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                Nurturing the next Generation for Christ. Empowering children
-                and young people to walk in purpose and become agents of change.
+                Nurturing the next generation for Christ in Ikorodu, Lagos, and beyond. Empowering children, teenagers, and young people with Christian leadership, spiritual growth, biblical discipleship, and community outreach.
               </p>
               <div className="flex gap-4 flex-wrap">
                 <Link href="/programs">
@@ -65,7 +64,7 @@ export default function Home() {
                 <Image
                   loading="eager"
                   src="/imgs/asset-1.jpeg"
-                  alt="Team"
+                  alt="Ekklesia Elite youth and teens ministry team in Ikorodu"
                   width={500}
                   height={500}
                   className="w-full h-full object-fill"
@@ -113,7 +112,7 @@ export default function Home() {
             About the Ministry
           </h2>
           <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-            Repairer of the Breach is a faith-based outreach dedicated to
+            Ekklesia Elite Evangelical Ministry (Repairer of the Breach) is a faith-based Christian community in Ikorodu, Lagos, dedicated to
             developing confident and purposeful young people with strong
             Biblical foundations.
           </p>
@@ -221,7 +220,7 @@ export default function Home() {
                   <Image
                     loading="eager"
                     src="/imgs/founder-2.jpeg"
-                    alt="Founder"
+                    alt="Mojisola Olawale - Founder of Ekklesia Elite Evangelical Ministry in Ikorodu"
                     width={500}
                     height={500}
                     className="object-cover"
@@ -230,14 +229,14 @@ export default function Home() {
               </div>
               <div className="order-1 md:order-2 mt-5 flex flex-col items-center md:items-start">
                 <p className="text-purple-600 font-semibold uppercase text-sm mb-2">
-                  Testimonial
+                  Founder &amp; Visionary
                 </p>
                 <h3 className="text-3xl font-bold text-gray-900 mb-4">
                   Mojisola Olawale
                 </h3>
                 <p className="text-gray-600 mb-6 md:leading-relaxed text-center md:text-start">
-                  Hi, I am Mojisola olawale a certified emotional intelligence
-                  coach I help you communicate with confidence and clarity.
+                  Hi, I am Mojisola Olawale, founder of Ekklesia Elite Evangelical Ministry. As a certified emotional intelligence
+                  coach and youth mentor in Ikorodu, Lagos, I help children, teenagers, and young adults communicate with confidence and clarity, cultivate spiritual growth, and walk in divine purpose.
                 </p>
                 <div className="flex gap-4 flex-col md:flex-row items-center justify-start">
                   <Link
@@ -314,8 +313,7 @@ export default function Home() {
               Ekklesia Elite Team
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Our professional team offers a wide range of digital solutions and
-              services to help your brand or business thrive in the digital age.
+              The Ekklesia Elite Team provides professional digital media, branding, and creative solutions in Ikorodu, Lagos, and online to help kingdom initiatives and brands thrive.
             </p>
           </div>
 
@@ -371,7 +369,7 @@ export default function Home() {
       <section className="bg-white py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
-            Join Our Prayer & Mentorship Group
+            Join Our Teens &amp; Youth Prayer &amp; Mentorship Group in Ikorodu
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
@@ -382,8 +380,8 @@ export default function Home() {
                 <strong>When:</strong> 1 hour every Saturday online, 5am
               </p>
               <p className="text-gray-700 mb-6">
-                We teach our teenagers the how &amp; importance of prayer. We
-                listen to their challenges and provide a suitable solution.
+                We teach our teenagers and youth the importance and practice of prayer. We
+                listen to their challenges, foster spiritual growth, and provide biblical solutions.
               </p>
               <Link
                 href="https://chat.whatsapp.com/JZgbGPKGvyoAkGrxZjXi72?mode=gi_t"
@@ -412,7 +410,7 @@ export default function Home() {
                 <Image
                   loading="eager"
                   src="/imgs/program.jpeg"
-                  alt="Prayer & Mentorship Program"
+                  alt="Ekklesia Elite teens and youth prayer mentorship group in Ikorodu"
                   width={400}
                   height={400}
                   className="w-full h-full object-cover"

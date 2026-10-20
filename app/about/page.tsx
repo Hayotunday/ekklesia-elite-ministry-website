@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "About Us | Evangelical Ministry in Ikorodu",
+  description:
+    "Learn about Ekklesia Elite Evangelical Ministry (Repairer of the Breach) in Ikorodu, Lagos. Founded by Mojisola Olawale to raise purpose-driven Christian leaders, youth, and teenagers.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About Us | Ekklesia Elite Evangelical Ministry in Ikorodu",
+    description:
+      "Learn about Ekklesia Elite Evangelical Ministry (Repairer of the Breach) in Ikorodu, Lagos. Founded by Mojisola Olawale to raise purpose-driven Christian leaders.",
+    url: "/about",
+  },
+};
 
 export default function About() {
   return (
@@ -13,7 +29,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">About Us</h1>
           <p className="text-xl text-gray-50 max-w-2xl mx-auto">
-            Discover the heart and mission behind Repairer of the Breach
+            Discover the heart and mission behind Ekklesia Elite Evangelical Ministry — Repairer of the Breach in Ikorodu, Lagos
           </p>
         </div>
       </section>
@@ -26,7 +42,7 @@ export default function About() {
           </h2>
           <div className="text-gray-600 text-lg leading-relaxed space-y-6">
             <p>
-              Our ministry is a faith-based outreach dedicated to raising godly,
+              Based in Ikorodu, Lagos, Nigeria, our evangelical ministry is a faith-based Christian outreach and community dedicated to raising godly,
               confident, and purpose-driven children and teenagers. We believe
               that the foundation of a strong society begins with nurturing
               young hearts and minds with the truth of God’s Word, strong moral
@@ -189,7 +205,7 @@ export default function About() {
                     <Image
                       loading="eager"
                       src={member.src}
-                      alt={member.name}
+                      alt={`${member.name} - ${member.role} at Ekklesia Elite Evangelical Ministry in Ikorodu`}
                       width={100}
                       height={100}
                       className="object-cover w-full h-full rounded-full"
