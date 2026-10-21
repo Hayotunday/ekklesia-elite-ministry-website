@@ -47,7 +47,7 @@ export default function DevotionalPage() {
               Daily Devotional
             </h1>
             <p className="text-slate-500">
-              Spiritual nourishment for your soul
+              Spiritual nourishment and biblical life teachings from Ekklesia Elite Evangelical Ministry
             </p>
           </div>
 

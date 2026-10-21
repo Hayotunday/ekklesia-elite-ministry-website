@@ -485,6 +485,41 @@ export default function AdminPage() {
                           })
                         }
                       />
+                  {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+                    <div className="space-y-4">
+                      <h4 className="font-bold text-sm text-purple-700">
+                        MEMORY VERSE
+                      </h4>
+                      <div className="space-y-2">
+                        <Label>Reference (e.g. John 3:16)</Label>
+                        <Input
+                          value={devotionalForm.memoryVerse.verse}
+                          onChange={(e) =>
+                            setDevotionalForm({
+                              ...devotionalForm,
+                              memoryVerse: {
+                                ...devotionalForm.memoryVerse,
+                                verse: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Text</Label>
+                        <Textarea
+                          value={devotionalForm.memoryVerse.text}
+                          onChange={(e) =>
+                            setDevotionalForm({
+                              ...devotionalForm,
+                              memoryVerse: {
+                                ...devotionalForm.memoryVerse,
+                                text: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Text</Label>

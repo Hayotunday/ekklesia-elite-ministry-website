@@ -79,9 +79,7 @@ export default function Programs() {
               <span className="text-purple-600">Biblical Foundations</span>
             </h1>
             <p className="text-gray-600 text-xl max-w-2xl mx-auto">
-              We provide practical guidance and spiritual restoration for every
-              area of life, rebuilding the foundations of character and
-              community.
+              Empowering children, teens, and youth across Ikorodu, Lagos, and beyond with practical guidance, spiritual growth, and character restoration rooted in biblical foundations.
             </p>
           </div>
         </div>
@@ -102,7 +100,7 @@ export default function Programs() {
                 >
                   <img
                     src={program.image}
-                    alt={program.title}
+                    alt={`${program.title} - Ekklesia Elite Youth Program in Ikorodu`}
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                   />
                 </div>
@@ -147,9 +145,8 @@ export default function Programs() {
                 through faith-based restoration.
               </p>
               <p className="text-gray-600 leading-relaxed mb-8">
-                With a legacy of impact spanning over a decade, we've touched
-                the lives of hundreds of young people and their families across
-                multiple communities.
+                With a legacy of impact spanning over a decade in Ikorodu and across Lagos State, we've touched
+                the lives of hundreds of children, teenagers, and young leaders through active community outreach and discipleship.
               </p>
               <div className="grid grid-cols-2 gap-6">
                 <div>
@@ -169,7 +166,7 @@ export default function Programs() {
             <div className="bg-linear-to-br from-purple-400 to-purple-600 rounded-2xl h-96 overflow-hidden">
               <img
                 src="/imgs/asset-16.jpeg"
-                alt="Community"
+                alt="Ekklesia Elite Christian community outreach and fellowship in Ikorodu, Lagos"
                 className="w-full h-full object-cover"
               />
             </div>

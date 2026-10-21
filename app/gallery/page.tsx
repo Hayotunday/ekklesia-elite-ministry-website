@@ -98,8 +98,7 @@ export default function Gallery() {
             Ministry in Action
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Witness the impact of our community outreach, spiritual growth, and
-            dedicated service across the globe.
+            Witness the impact of our youth and teens ministry, community outreach, and spiritual discipleship across Ikorodu, Lagos, and beyond.
           </p>
         </div>
       </section>
