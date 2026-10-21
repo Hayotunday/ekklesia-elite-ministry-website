@@ -127,9 +127,7 @@ export default function DevotionalPage() {
 
               {/* Conclusion */}
               <section className="bg-purple-50 p-6 rounded-xl border border-purple-100">
-                <h3 className="font-bold text-purple-900 mb-2">
-                  Conclusion / Prayer
-                </h3>
+                <h3 className="font-bold text-purple-900 mb-2">Conclusion</h3>
                 <p className="text-purple-800 leading-relaxed">
                   {devotional.conclusion}
                 </p>

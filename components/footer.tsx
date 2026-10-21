@@ -136,6 +136,14 @@ export function Footer() {
               </li>
               <li>
                 <Link
+                  href="/books"
+                  className="hover:text-purple-400 transition-colors"
+                >
+                  Books
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/contact"
                   className="hover:text-purple-400 transition-colors"
                 >

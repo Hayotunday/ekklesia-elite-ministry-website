@@ -20,9 +20,29 @@ export async function POST(request: Request) {
   try {
     // convert file to buffer for upload
     const buffer = Buffer.from(await file.arrayBuffer());
+    const isPdf = file.type === "application/pdf";
+    // set target folder dynamically based on file type
+    const targetFolder = isPdf ? "documents" : "gallery";
+    // set resource type dynamically based on file type
+    const resourceType = isPdf ? "raw" : "image";
+    // configure upload options dynamically based on file type
+    const uploadOptions: any = {
+      folder: targetFolder,
+      resource_type: resourceType,
+    };
+
+    // if it's pdf, construct a unique public_id with the.pdf extension preserved
+    if (isPdf) {
+      const cleanFileName = file.name
+        .replace(/\.[^\.]+$/, "") // remove original extension safely
+        .replace(/[^a-zA-Z0-9]/g, "_"); //replace special characters with underscores
+
+      uploadOptions.public_id = `${cleanFileName}_${Date.now()}.pdf`; // append timestamp for uniqueness
+    }
+
     const uploadPromise: Promise<any> = new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: "gallery" },
+        uploadOptions,
         (error: any, result: any) => {
           if (error) reject(error);
           else resolve(result);
@@ -33,7 +53,8 @@ export async function POST(request: Request) {
 
     const result: any = await uploadPromise;
     return NextResponse.json({
-      url: result.secure_url,
+      url: result.url,
+      secure_url: result.secure_url,
       publicId: result.public_id,
     });
   } catch (err) {
@@ -46,10 +67,13 @@ export async function DELETE(request: Request) {
   try {
     const body = await request.json();
     const publicId = body?.publicId || body?.id;
+    const resourceType = body?.resourceType || "image";
     if (!publicId) {
       return NextResponse.json({ error: "publicId required" }, { status: 400 });
     }
-    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("delete cloudinary error", err);
